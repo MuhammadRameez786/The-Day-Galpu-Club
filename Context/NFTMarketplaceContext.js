@@ -74,7 +74,7 @@ export const NFTMarketplaceProvider = ({ children }) => {
   const checkIfWalletConnected = async () => {
     try {
       if (!window.ethereum)
-        //return setOpenError(true), setError("Install MetaMask");
+        return setOpenError(true), setError("Install MetaMask");
 
       const accounts = await window.ethereum.request({
         method: "eth_accounts",
