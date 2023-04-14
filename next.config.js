@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ["daygalpu.infura-ipfs.io", "infura-ipfs.io"],
+    domains: ["day-galpu-club.infura-ipfs.io", "infura-ipfs.io", "daygalpu.infura-ipfs.io", "res.cloudinary.com"],
   },
 };
 

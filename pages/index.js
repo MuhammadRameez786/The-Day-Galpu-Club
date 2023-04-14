@@ -6,6 +6,10 @@ import {
   HeroSection,
   Service,
   BigNFTSilder,
+  Arts,
+  Music,
+  Photography,
+  Top3,
   Subscribe,
   Title,
   Category,
@@ -25,26 +29,29 @@ import { getTopCreators } from "../TopCreators/TopCreators";
 import { NFTMarketplaceContext } from "../Context/NFTMarketplaceContext";
 
 const Home = () => {
-  const { checkIfWalletConnected, currentAccount } = useContext(
-    NFTMarketplaceContext
-  );
-  useEffect(() => {
-    checkIfWalletConnected();
-  }, []);
+  // const { checkIfWalletConnected, currentAccount } = useContext(
+  //   NFTMarketplaceContext
+  // );
+  // useEffect(() => {
+  //   checkIfWalletConnected();
+  // }, []);
 
-  const { fetchNFTs } = useContext(NFTMarketplaceContext);
+  // const { fetchNFTs } = useContext(NFTMarketplaceContext);
   const [nfts, setNfts] = useState([]);
   const [nftsCopy, setNftsCopy] = useState([]);
 
-  useEffect(() => {
-    if (currentAccount) {
-      fetchNFTs().then((items) => {
-        setNfts(items.reverse());
-        setNftsCopy(items);
-        console.log(nfts);
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (currentAccount) {
+  //     fetchNFTs().then((items) => {
+  //       if (items) {
+  //         setNfts(items.reverse());
+  //         setNftsCopy(items);
+  //         console.log(nfts);
+  //       }
+  //     });
+  //   }
+  // }, []);
+  
 
   //CREATOR LIST
 
@@ -57,30 +64,30 @@ const Home = () => {
       <Service />
       <BigNFTSilder />
       <Title
-        heading="Audio Collection"
-        paragraph="Discover the most outstanding NFTs in all topics of life."
+        heading="Trending in Art"
       />
-      <AudioLive />
-      {creators.length == 0 ? (
-        <Loader />
-      ) : (
-        <FollowerTab TopCreator={creators} />
-      )}
-
-      <Slider />
-      <Collection />
+      <Arts />
+      <Title
+        heading="Trending in Music"
+      />
+      <Music />
+      <Title
+        heading="Trending in Photography"
+      />
+      <Photography />
+      <Title
+        heading="Our Top Sellers"
+        paragraph="Discover the most outstanding Sellers."
+      />
+      <Top3 />
       <Title
         heading="Featured NFTs"
         paragraph="Discover the most outstanding NFTs in all topics of life."
       />
       <Filter />
-      {nfts.length == 0 ? <Loader /> : <NFTCard NFTData={nfts} />}
+      <NFTCard />
+      {/* {nfts.length == 0 ? <Loader /> : <NFTCard NFTData={nfts} />} */}
 
-      <Title
-        heading="Browse by category"
-        paragraph="Explore the NFTs in the most featured categories."
-      />
-      <Category />
       <Subscribe />
       <Brand />
       <Video />

@@ -58,6 +58,7 @@
     grid-template-columns: 1fr 1fr .5fr 1fr .3fr;
     gap: 1rem;
     align-items: center;
+    padding-right: 2rem;
     /* align-self: flex-end; */
 }
 
@@ -90,6 +91,9 @@
 .notify{
     font-size: 2rem;
 }
+.navbar_container_right_profile_box p {
+    white-space: nowrap;
+}
 
 .navbar_container_right_button{
     position: relative;
@@ -99,8 +103,13 @@
 .navbar_container_right_profile_box{
     position: relative;
     cursor: pointer;
+    padding-left: 1rem;
 }
-
+.navbar_container_right_profile_box p{
+    position: relative;
+    cursor: pointer;
+    padding-left: 1rem;
+}
 .navbar_container_right_profile{
     border-radius: 50%;
 }

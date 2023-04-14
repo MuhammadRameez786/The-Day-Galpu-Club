@@ -1,5 +1,8 @@
-import React, { useState } from "react";
-import Image from "next/image";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from 'next/router';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
   MdVerified,
   MdCloudUpload,
@@ -29,20 +32,52 @@ import { BsThreeDots } from "react-icons/bs";
 
 //INTERNAL IMPORT
 import Style from "./AuthorProfileCard.module.css";
-import images from "../../img";
 import { Button } from "../../components/componentsindex.js";
 
 const AuthorProfileCard = ({ currentAccount }) => {
+  //const [state, setState] = useState(initialState);
+  const [user, setUser] = useState('')
+  const [isClient, setIsClient] = useState(false);
+  const [followersCount, setFollowersCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
+  const dispatch = useDispatch();
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+  //console.log(userInfo);
+  const router = useRouter();
+    
+  useEffect(() => {
+    if (!userInfo) {
+      router.push('/login');
+    } else {
+      setIsClient(true);
+      setUser(userInfo?.user || {});
+      setFollowersCount(userInfo?.user?.followers?.length || 0);
+      setFollowingCount(userInfo?.user?.following?.length || 0);
+    }
+  }, [userInfo, currentAccount, router]); 
+
+  useEffect(() => {
+    if (isClient) {
+      const copyAddress = () => {
+        const copyText = document.getElementById("myInput");
+    
+        copyText.select();
+        if (typeof window !== 'undefined') {
+          navigator.clipboard.writeText(copyText.value);
+        }
+      };
+      // Update the state here
+    }
+  }, [followersCount, followingCount]);
+
+  if (typeof window !== 'undefined' && !router) return null;
+ 
   const [share, setShare] = useState(false);
   const [report, setReport] = useState(false);
 
   //copyAddress function
-  const copyAddress = () => {
-    const copyText = document.getElementById("myInput");
-
-    copyText.select();
-    navigator.clipboard.writeText(copyText.value);
-  };
+  
 
   const openShare = () => {
     if (!share) {
@@ -61,40 +96,61 @@ const AuthorProfileCard = ({ currentAccount }) => {
       setReport(false);
     }
   };
+ 
+  const handleFollow = () => {
+    // dispatch follow action
+    setIsFollowing(true);
+    setFollowersCount(followersCount + 1);
+  };
+
+  const handleUnfollow = () => {
+    // dispatch unfollow action
+    setIsFollowing(false);
+    setFollowersCount(followersCount - 1);
+  };
 
   return (
-    <div className={Style.AuthorProfileCard}>
+    <div>
+      <ToastContainer />
+      <div className={Style.AuthorProfileCard}>
       <div className={Style.AuthorProfileCard_box}>
-        <div className={Style.AuthorProfileCard_box_img}>
-          <Image
-            src={images.nft_image_1}
+      {isClient && userInfo && (
+        <div className={Style.AuthorProfileCard_box_img}> 
+          <img
+            src={userInfo?.data?.user?.pic || 'Profile Pic'}
             className={Style.AuthorProfileCard_box_img_img}
-            alt="NFT IMAGES"
+            alt="Profile Picture"
             width={220}
             height={220}
           />
+          <div className={Style.AuthorProfileCard_box_head}>
+            <div>
+            <h3>{userInfo?.data?.user?.name || 'Anonymous'}</h3>
+            </div>
+            <div className={Style.AuthorProfileCard_box_info_address}>
+            <small>{currentAccount}..</small>
+              <FiCopy
+                onClick={() => copyAddress()}
+                className={Style.AuthorProfileCard_box_info_address_icon}
+              />
+            </div>
+
+            <p>
+            {userInfo?.data?.user?.description || 'No discription'}
+            </p>
+          </div>
+          <div className={Style.AuthorProfileCard_box_info_follow}>
+              <div>
+                <span style={{ fontSize: '1.3rem', fontWeight: '700' }}>{followersCount}</span> Followers
+              </div>
+              <div>
+                <span style={{ fontSize: '1.3rem', fontWeight: '700' }}>{followingCount}</span> Following
+              </div>
+            </div>
         </div>
+        )}
 
         <div className={Style.AuthorProfileCard_box_info}>
-          <h2>
-            The Day Galpu Club{""}{" "}
-            <span>
-              <MdVerified />
-            </span>{" "}
-          </h2>
-
-          <div className={Style.AuthorProfileCard_box_info_address}>
-            <input type="text" value={currentAccount} id="myInput" />
-            <FiCopy
-              onClick={() => copyAddress()}
-              className={Style.AuthorProfileCard_box_info_address_icon}
-            />
-          </div>
-
-          <p>
-          We create Digital Art based on the authentic storylines of the Indigenous people of Dulunguru, a Micronation that returns liberty for all...
-          </p>
-
           <div className={Style.AuthorProfileCard_box_info_social}>
           <a href="https://www.facebook.com/Thedaygalpuclub">
               <TiSocialFacebook />
@@ -132,7 +188,27 @@ const AuthorProfileCard = ({ currentAccount }) => {
         </div>
 
         <div className={Style.AuthorProfileCard_box_share}>
-          <Button btnName="Follow" handleClick={() => {}} />
+        {userInfo?.user?._id !== user?._id && ( // show follow button only for other users
+          <div>
+            {userInfo?.user?.followers?.includes(user?._id) ? ( // if current user is already following the other user, show unfollow button
+              <Button
+                btnName="Unfollow"
+                handleClick={() => {
+                  dispatch(unfollowUser(userInfo?.user?._id)); // dispatch an action to unfollow the other user
+                  toast.success("Unfollowed!");
+                }}
+              />
+            ) : ( // else, show follow button
+              <Button
+                btnName="Follow"
+                handleClick={() => {
+                  dispatch(followUser(userInfo?.user?._id)); // dispatch an action to follow the other user
+                  toast.success("Followed!");
+                }}
+              />
+            )}
+          </div>
+        )}
           <MdCloudUpload
             onClick={() => openShare()}
             className={Style.AuthorProfileCard_box_share_icon}
@@ -188,7 +264,11 @@ const AuthorProfileCard = ({ currentAccount }) => {
         </div>
       </div>
     </div>
+    </div>
+    
   );
 };
 
 export default AuthorProfileCard;
+
+

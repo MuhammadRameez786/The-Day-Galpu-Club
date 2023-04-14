@@ -23,9 +23,11 @@ const searchPage = () => {
     try {
       if (currentAccount) {
         fetchNFTs().then((items) => {
-          setNfts(items.reverse());
-          setNftsCopy(items);
-          console.log(nfts);
+          if (items && items.length > 0) {
+            setNfts(items.reverse());
+            setNftsCopy(items);
+            console.log(nfts);
+          } 
         });
       }
     } catch (error) {
@@ -69,7 +71,7 @@ const searchPage = () => {
         onClearSearch={onClearSearch}
       />
       <Filter />
-      {nfts.length == 0 ? <Loader /> : <NFTCardTwo NFTData={nfts} />}
+      <NFTCardTwo/>
       <Slider />
       <Brand />
     </div>

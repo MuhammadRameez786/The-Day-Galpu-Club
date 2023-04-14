@@ -25,23 +25,22 @@ const account = () => {
       <div className={Style.account_info}>
         <h1>Profile settings</h1>
         <p>
-          You can set preferred display name, create your profile URL and manage
+           You can set preferred display name, create your profile URL and manage
           other personal settings.
         </p>
       </div>
 
       <div className={Style.account_box}>
-        <div className={Style.account_box_img} {...getRootProps()}>
-          <input {...getInputProps()} />
-          <Image
-            src={images.user1}
-            alt="account upload"
-            width={150}
-            height={150}
-            className={Style.account_box_img_img}
-          />
-          <p className={Style.account_box_img_para}>Change Image</p>
-        </div>
+        {/* <div className={Style.account_box_img}>
+            <Image
+              src={images.user1}
+              alt="account upload"
+              width={150}
+              height={150}
+              className={Style.account_box_img_img}
+            />
+          )}
+        </div> */}
         <div className={Style.account_box_from}>
           <From />
         </div>
@@ -51,3 +50,4 @@ const account = () => {
 };
 
 export default account;
+

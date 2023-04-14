@@ -157,7 +157,7 @@
         gap: 1rem;
     }
     .AuthorProfileCard_box_img{
-        width: 50%;
+        width: 30%;
     }
 
     .AuthorProfileCard_box_info h2{
@@ -184,6 +184,9 @@
         grid-row:  1 / -1;
         padding: 1rem;
         gap: 1rem;
+    }
+    .AuthorProfileCard_box_info_follow{
+        font-size: .5rem;
     }
 
     .AuthorProfileCard_box_share_icon{

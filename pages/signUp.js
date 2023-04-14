@@ -1,18 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
+import Image from "next/image";
+import axios from "axios";
 
-//INTERNAL IMPORT
-import Style from "../styles/login.module.css";
-import LoginAndSignUp from "../loginAndSignUp/loginAndSignUp";
+//INTERNALIMPORT
+import Style from "../styles/signUp.module.css";
+import SignUp from "../SignUp/SignUp";
+import images from "../img";
+import { Button } from "../components/componentsindex.js";
 
 const signUp = () => {
+  
   return (
-    <div className={Style.login}>
-      <div className={Style.login_box}>
+    <div className={Style.SignUp}>
+      <div className={Style.SignUp_box}>
         <h1>SignUp</h1>
-        <LoginAndSignUp />
-        <p className={Style.login_box_para}>
-          New user? <a href="#">Create an account</a>
-        </p>
+        <SignUp />
       </div>
     </div>
   );

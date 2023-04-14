@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { MdOutlineHttp, MdOutlineAttachFile } from "react-icons/md";
 import { FaPercent } from "react-icons/fa";
 import { AiTwotonePropertySafety } from "react-icons/ai";
@@ -12,20 +12,50 @@ import formStyle from "../AccountPage/Form/Form.module.css";
 import images from "../img";
 import { Button } from "../components/componentsindex.js";
 import { DropZone } from "../UploadNFT/uploadNFTIndex.js";
+import { NFTMarketplaceContext } from "../Context/NFTMarketplaceContext";
+
+
 
 const UloadNFT = ({ uploadToIPFS, createNFT }) => {
+  const { currentAccount } = useContext(NFTMarketplaceContext);
   const [price, setPrice] = useState("");
-  const [active, setActive] = useState(0);
   const [name, setName] = useState("");
   const [website, setWebsite] = useState("");
   const [description, setDescription] = useState("");
   const [royalties, setRoyalties] = useState("");
   const [fileSize, setFileSize] = useState("");
-  const [category, setCategory] = useState(0);
+  const [collectionName, setCollectionName] = useState("");
   const [properties, setProperties] = useState("");
   const [image, setImage] = useState(null);
+  const [filteredData, setFilteredData] = useState([]);
+  const [sellers, setSellers] = useState([]);
 
   const router = useRouter();
+  useEffect(() => {
+    const eventSource = new EventSource("http://localhost:4000/api/v1/collection");
+
+    eventSource.addEventListener("nftCollection", (event) => {
+      const data = JSON.parse(event.data);
+      const newData = {};
+      for (const category in data) {
+        newData[category] = data[category].filter((item) => item.seller === currentAccount);
+      }
+      setFilteredData(newData);
+    });
+
+    return () => {
+      eventSource.close();
+    };
+  }, [currentAccount]);
+
+  function Dropdown({ options, onSelect }) {
+  }
+
+  const options = Object.keys(filteredData).reduce((acc, category) => {
+    return acc.concat(filteredData[category].map((item) => ({ name: item.name, category: category, collectionImage: item.collectionImage })));
+  }, []);
+
+ 
 
   const categoryArry = [
     {
@@ -65,7 +95,7 @@ const UloadNFT = ({ uploadToIPFS, createNFT }) => {
         description={description}
         royalties={royalties}
         fileSize={fileSize}
-        category={category}
+        collectionName={collectionName}
         properties={properties}
         setImage={setImage}
         uploadToIPFS={uploadToIPFS}
@@ -76,7 +106,7 @@ const UloadNFT = ({ uploadToIPFS, createNFT }) => {
           <label htmlFor="nft">Item Name</label>
           <input
             type="text"
-            placeholder="shoaib bhai"
+            placeholder="NFT Name"
             className={formStyle.Form_box_input_userName}
             onChange={(e) => setName(e.target.value)}
           />
@@ -118,7 +148,6 @@ const UloadNFT = ({ uploadToIPFS, createNFT }) => {
             underneath its image. Markdown syntax is supported.
           </p>
         </div>
-
         <div className={formStyle.Form_box_input}>
           <label htmlFor="name">Choose collection</label>
           <p className={Style.upload_box_input_para}>
@@ -126,31 +155,16 @@ const UloadNFT = ({ uploadToIPFS, createNFT }) => {
           </p>
 
           <div className={Style.upload_box_slider_div}>
-            {categoryArry.map((el, i) => (
-              <div
-                className={`${Style.upload_box_slider} ${
-                  active == i + 1 ? Style.active : ""
-                }`}
-                key={i + 1}
-                onClick={() => (setActive(i + 1), setCategory(el.category))}
-              >
-                <div className={Style.upload_box_slider_box}>
-                  <div className={Style.upload_box_slider_box_img}>
-                    <Image
-                      src={el.image}
-                      alt="background image"
-                      width={70}
-                      height={70}
-                      className={Style.upload_box_slider_box_img_img}
-                    />
-                  </div>
-                  <div className={Style.upload_box_slider_box_img_icon}>
-                    <TiTick />
-                  </div>
-                </div>
-                <p>Crypto Legend - {el.category} </p>
-              </div>
-            ))}
+            <div>
+              <select value={collectionName} onChange={(e) => setCollectionName(e.target.value)}>
+                <option value="">Select a Collection</option>
+                {options.map((option) => (
+                  <option key={option.name} value={option.name}>
+                    {option.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
 
@@ -219,11 +233,11 @@ const UloadNFT = ({ uploadToIPFS, createNFT }) => {
                 price,
                 image,
                 description,
-                router
-                // website,
-                // royalties,
-                // fileSize,
-                // category,
+                router,
+                website,
+                royalties,
+                fileSize,
+                collectionName // pass collectionName as an argument
                 // properties
               )
             }

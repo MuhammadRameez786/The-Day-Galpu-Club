@@ -99,10 +99,6 @@ const NFTDetailsImg = ({ nft }) => {
               <br></br>
               {nft.seller}
             </p>
-            <p>
-              <small>Token ID</small>
-              &nbsp; &nbsp; {nft.tokenId}
-            </p>
           </div>
         )}
       </div>

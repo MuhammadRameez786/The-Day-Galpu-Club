@@ -4,6 +4,7 @@ import NavBar from "./NavBar/NavBar";
 import HeroSection from "./HeroSection/HeroSection";
 import Service from "./Service/Service";
 import BigNFTSilder from "./BigNFTSilder/BigNFTSilder";
+import Top3 from "./Top3/Top3";
 import Subscribe from "./Subscribe/Subscribe";
 import Title from "./Title/Title";
 import Category from "./Category/Category";
@@ -18,6 +19,10 @@ import Brand from "./Brand/Brand";
 import Video from "./Video/Video";
 import Loader from "./Loader/Loader";
 import Error from "./Error/Error";
+import Arts from "./NFTCollection/Arts/Arts";
+import Music from "./NFTCollection/Music/Music";
+import Photography from "./NFTCollection/Photography/Photography";
+
 
 export {
   Button,
@@ -26,8 +31,12 @@ export {
   HeroSection,
   Service,
   BigNFTSilder,
+  Top3,
   Subscribe,
   Title,
+  Arts,
+  Music,
+  Photography,
   Category,
   Filter,
   NFTCard,

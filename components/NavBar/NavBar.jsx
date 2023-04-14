@@ -7,6 +7,8 @@ import { BsSearch } from "react-icons/bs";
 import { CgMenuLeft, CgMenuRight } from "react-icons/cg";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import {} from "react-router-dom";
 
 //INTERNAL IMPORT
 import Style from "./NavBar.module.css";
@@ -18,21 +20,33 @@ import images from "../../img";
 import { NFTMarketplaceContext } from "../../Context/NFTMarketplaceContext";
 
 const NavBar = () => {
+  const dispatch = useDispatch();
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   //----USESTATE COMPONNTS
-  const [discover, setDiscover] = useState(false);
-  const [help, setHelp] = useState(false);
+  const [user, setUser] = useState('')
+  const [discoverOpen, setDiscoverOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
   const [notification, setNotification] = useState(false);
   const [profile, setProfile] = useState(false);
   const [openSideMenu, setOpenSideMenu] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const [name, setName] = useState("");
+  const [pic, setPic] = useState("");
+
+  useEffect(() => {
+    setUser(userInfo);
+  }, [userInfo]);
   
   const handleDiscoverClick = () => {
-    setDiscover(!discover);
-    setHelp(false);
+    setDiscoverOpen(!discoverOpen);
+    setHelpOpen(false);
   }
-
   const handleHelpClick = () => {
-    setHelp(!help);
-    setDiscover(false);
+    setHelpOpen(!helpOpen);
+    setDiscoverOpen(false);
   } 
 
   const router = useRouter();
@@ -40,18 +54,18 @@ const NavBar = () => {
   const openMenu = (e) => {
     const btnText = e.target.innerText;
     if (btnText == "Discover") {
-      setDiscover(true);
-      setHelp(false);
+      setDiscoverOpen(true);
+      setHelpOpen(false);
       setNotification(false);
       setProfile(false);
     } else if (btnText == "Help Center") {
-      setDiscover(false);
-      setHelp(true);
+      setDiscoverOpen(false);
+      setHelpOpen(true);
       setNotification(false);
       setProfile(false);
     } else {
-      setDiscover(false);
-      setHelp(false);
+      setDiscoverOpen(false);
+      setHelpOpen(false);
       setNotification(false);
       setProfile(false);
     }
@@ -60,8 +74,8 @@ const NavBar = () => {
   const openNotification = () => {
     if (!notification) {
       setNotification(true);
-      setDiscover(false);
-      setHelp(false);
+      setDiscoverOpen(false);
+      setHelpOpen(false);
       setProfile(false);
     } else {
       setNotification(false);
@@ -71,8 +85,8 @@ const NavBar = () => {
   const openProfile = () => {
     if (!profile) {
       setProfile(true);
-      setHelp(false);
-      setDiscover(false);
+      setHelpOpen(false);
+      setDiscoverOpen(false);
       setNotification(false);
     } else {
       setProfile(false);
@@ -97,6 +111,11 @@ const NavBar = () => {
     }
   }, [currentAccount, connectWallet]);  
 
+  useEffect(() => {}, [userInfo]);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   return (
     <div className={Style.navbar}>
       <div className={Style.navbar_container}>
@@ -118,10 +137,15 @@ const NavBar = () => {
 
         {/* //END OF LEFT SECTION */}
         <div className={Style.navbar_container_right}>
-          <div className={Style.navbar_container_right_discover}>
-            {/* DISCOVER MENU */}
-            <p onClick={(e) => openMenu(e)}>Discover</p>
-            {discover && (
+          <div className={Style.navbar_container_right_discover}
+
+            onMouseEnter={handleDiscoverClick}
+             onMouseLeave={() => setDiscoverOpen(false)}
+             >
+          <Link href="#">
+            <a>Discover</a>
+          </Link>
+            {discoverOpen && (
               <div className={Style.navbar_container_right_discover_box}>
                 <Discover />
               </div>
@@ -129,9 +153,14 @@ const NavBar = () => {
           </div>
 
           {/* HELP CENTER MENU */}
-          <div className={Style.navbar_container_right_help}>
-            <p onClick={(e) => openMenu(e)}>Help Center</p>
-            {help && (
+          <div className={Style.navbar_container_right_help}
+            onMouseEnter={handleHelpClick}
+            onMouseLeave={() => setHelpOpen(false)}
+          >
+            <Link href="#">
+              <a>Help Center</a>
+            </Link>
+            {helpOpen && (
               <div className={Style.navbar_container_right_help_box}>
                 <HelpCenter />
               </div>
@@ -158,23 +187,32 @@ const NavBar = () => {
               />
             )}
           </div>
-
-          {/* USER PROFILE */}
-
-          <div className={Style.navbar_container_right_profile_box}>
-            <div className={Style.navbar_container_right_profile}>
-              <Image
-                src={images.user1}
-                alt="Profile"
-                width={40}
-                height={40}
-                onClick={() => openProfile()}
-                className={Style.navbar_container_right_profile}
-              />
-
-              {profile && <Profile currentAccount={currentAccount} />}
-            </div>
-          </div>
+          {isMounted && (
+            /* USER PROFILE */
+            (typeof window !== "undefined" && userInfo) ? (
+              <div className={Style.navbar_container_right_profile_box}>
+                <div className={Style.navbar_container_right_profile}> 
+                  <img
+                    src={userInfo?.data?.user?.pic || 'Anonymous'}
+                    alt="Profile"
+                    width={40}
+                    height={40}
+                    onClick={() => openProfile()}
+                    className={Style.navbar_container_right_profile}
+                  /> 
+                  {profile && <Profile currentAccount={currentAccount} />}       
+                </div>
+              </div>
+            ) : (
+              <div className={Style.navbar_container_right_profile_box}>
+                <div className={Style.navbar_container_right_profile}>
+                  <Link href="/login">
+                    <a className={Style.link}>Login</a>
+                  </Link>
+                </div>
+              </div>
+            )
+          )}
 
           {/* MENU BUTTON */}
 

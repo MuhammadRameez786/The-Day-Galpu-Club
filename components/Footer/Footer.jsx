@@ -24,6 +24,7 @@ import {
 import Style from "./Footer.module.css";
 import images from "../../img";
 import { Discover, HelpCenter } from "../NavBar/index";
+import  Newsletter from "./MailchimpSubscribe";
 
 const Footer = () => {
   return (
@@ -85,11 +86,7 @@ const Footer = () => {
 
         <div className={Style.subscribe}>
           <h3>Subscribe</h3>
-
-          <div className={Style.subscribe_box}>
-            <input type="email" placeholder="Enter your email *" />
-            <RiSendPlaneFill className={Style.subscribe_box_send} />
-          </div>
+          <Newsletter />
           <div className={Style.subscribe_box_info}>
             <p>
               Discover, collect, and sell extraordinary NFTs OpenSea is the

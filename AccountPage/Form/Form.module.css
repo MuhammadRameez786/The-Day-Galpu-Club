@@ -2,12 +2,30 @@
 
 .Form{
     width: 100%;
+    padding-left: 1rem;
+    margin-right: 10rem;
+}
+.account_box_img{
+    margin-top: 2rem;
+    cursor: pointer;
+    position: relative;
+    text-align: center;
+    
+}
+
+.account_box_img_img{
+    border-radius: 50%;
+    
+    
 }
 
 .Form_box_input{
     margin-top: 2rem;
 }
 
+.Form_box_img_img{
+    border-radius: 50%;
+}
 .Form_box_input label{
     display: block;
     width: 100%;
@@ -26,6 +44,25 @@
     outline: none;
 }
 
+.Form_box_image{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 18px;
+}
+.Form_box_image lebel{
+    margin-top: 2rem;
+    cursor: pointer;
+    position: center;
+    text-align: center;
+    margin-bottom: 18px;
+}
+.Form_box_image a{
+    color: inherit;
+    text-decoration: none;
+    margin-top: 1rem;
+}
 .Form_box_input::placeholder{
     font-size: 1.2rem;
     color: var(--icons-color);
@@ -73,13 +110,29 @@
 }
 .Form_box_btn{
     margin: 4rem 0;
+    font-size: 2rem;
 }
 
 .button{
     width: 100%;
     display: flex;
     justify-content: center;
-    font-size: 1.5rem;
+    font-size: 3rem;
+    font-family: exo, sans-serif;
+    background-color: var(--icons-color);
+    padding: 1rem 2rem;
+    border: 1px solid var(--icons-color);
+    border-radius: 2rem;
+    font-size: 1.1rem;
+    color: var(--shadow-light-color);
+    cursor: pointer;
+    transition:  all .2s ease-in;
+    box-shadow: var(--box-shadow);
+}
+.button:hover{
+    background-color: var(--main-bg-color);
+    border:  1px solid var(--icons-color);
+    color:  var(--icons-color);
 }
 
 @media screen and (max-width: 35em) {

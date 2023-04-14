@@ -60,6 +60,7 @@ const author = () => {
     NFTMarketplaceContext
   );
 
+
   const [nfts, setNfts] = useState([]);
   const [myNFTs, setMyNFTs] = useState([]);
 

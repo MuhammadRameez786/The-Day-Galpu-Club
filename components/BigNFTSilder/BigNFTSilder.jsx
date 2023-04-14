@@ -3,22 +3,73 @@ import Image from "next/image";
 import { AiFillFire, AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { MdVerified, MdTimer } from "react-icons/md";
 import { TbArrowBigLeftLines, TbArrowBigRightLine } from "react-icons/tb";
+import  { FaEthereum } from "react-icons/fa";
+import { useRouter } from 'next/router'
+import Link from "next/link";
+
 
 //INTERNAL IMPORT
 import Style from "./BigNFTSilder.module.css";
 import images from "../../img";
 import Button from "../Button/Button";
+import CountdownTimer from "./CountdownTimer/CountdownTimer";
 
-const BigNFTSilder = () => {
+const BigNFTSilder = ({ el }) => {
+  const router = useRouter()
   const [idNumber, setIdNumber] = useState(0);
+  const [nfts, setNFTs] = useState([]);
+  const [sliderData1, setSliderData1] = useState([]);
+  const [ethPrice, setEthPrice] = useState(null);
+
+  
+  useEffect(() => {
+    const eventSource = new EventSource("http://localhost:4000/api/v1/nfts/top-5-nfts");
+    eventSource.addEventListener("update", (event) => {
+      const data = JSON.parse(event.data);
+      setNFTs(data);
+    });
+    return () => eventSource.close();
+  }, []);
+
+    useEffect(() => {
+      if (nfts.length > 0) {
+        
+        const newSliderData = nfts.map((nft) => {
+          return {
+            title: nft.name,
+            nftImage: nft.image[0], //NFTimage
+            //image: nft.seller, // User Image
+            name: nft.seller,
+            price: `${nft.price}`,
+            collection: "Glow Worm World",
+            id: nft._id,
+            like: 243,
+            time: nft.createAt,
+          };
+        });
+    
+        setSliderData1(newSliderData);
+      }
+
+    }, [nfts]);
+    useEffect(() => {
+      fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd')
+        .then(response => response.json())
+        .then(data => setEthPrice(data.ethereum.usd))
+        .catch(error => console.log(error));
+    }, []);
+
+    const nftPriceEth = sliderData1[idNumber]?.price;
+    const nftPriceUsd = nftPriceEth && ethPrice ? (nftPriceEth * ethPrice).toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : 'Loading...';
+    //console.log("SliderData", sliderData1);
 
   const sliderData = [
     {
-      title: "Glow Worm #432",
+      title: "Hello NFT",
       id: 1,
-      name: "The Day Galpu Club",
-      collection: "Glow Worm World",
-      price: "0.6 ETH",
+      name: "Daulat Hussain",
+      collection: "GYm",
+      price: "00664 ETH",
       like: 243,
       image: images.user1,
       nftImage: images.nft_image_1,
@@ -77,14 +128,47 @@ const BigNFTSilder = () => {
         seconds: 15,
       },
     },
+    {
+      title: "Home NFT",
+      id: 5,
+      name: "Raayan Hussain",
+      collection: "GYm",
+      price: "4664 ETH",
+      like: 243,
+      image: images.user4,
+      nftImage: images.nft_image_1,
+      time: {
+        days: 87,
+        hours: 29,
+        minutes: 10,
+        seconds: 15,
+      },
+    },
+    {
+      title: "Home NFT",
+      id: 6,
+      name: "Nasir Hussain",
+      collection: "GYm",
+      price: "4664 ETH",
+      like: 243,
+      image: images.user4,
+      nftImage: images.nft_image_1,
+      time: {
+        days: 87,
+        hours: 29,
+        minutes: 10,
+        seconds: 15,
+      },
+    },
   ];
 
   //-------INC
   const inc = useCallback(() => {
-    if (idNumber + 1 < sliderData.length) {
+    if (idNumber + 1 < sliderData1.length) {
       setIdNumber(idNumber + 1);
     }
-  }, [idNumber, sliderData.length]);
+  }, [idNumber, sliderData1.length]);
+  
 
   //-------DEC
   const dec = useCallback(() => {
@@ -93,125 +177,109 @@ const BigNFTSilder = () => {
     }
   }, [idNumber]);
 
+  function handleClick() {
+    router.push('/NFT-details')
+  }
+
   return (
     <div className={Style.bigNFTSlider}>
-      <div className={Style.bigNFTSlider_box}>
-        <div className={Style.bigNFTSlider_box_left}>
-          <h2>{sliderData[idNumber].title}</h2>
-          <div className={Style.bigNFTSlider_box_left_creator}>
-            <div className={Style.bigNFTSlider_box_left_creator_profile}>
-              <Image
-                className={Style.bigNFTSlider_box_left_creator_profile_img}
-                src={sliderData[idNumber].image}
-                alt="profile image"
-                width={50}
-                height={50}
-              />
-              <div className={Style.bigNFTSlider_box_left_creator_profile_info}>
-                <p>Creator</p>
-                <h4>
-                  {sliderData[idNumber].name}{" "}
-                  <span>
-                    <MdVerified />
-                  </span>
-                </h4>
+            <div className={Style.bigNFTSlider_box}>
+              <div className={Style.bigNFTSlider_box_left}>
+                <h2>{sliderData1[idNumber]?.title || 'Loading...'}</h2>
+                <div className={Style.bigNFTSlider_box_left_creator}>
+                  <div className={Style.bigNFTSlider_box_left_creator_profile}>
+                    <Image
+                      className={Style.bigNFTSlider_box_left_creator_profile_img}
+                      src={sliderData[idNumber].image}
+                      alt="profile image"
+                      width={50}
+                      height={50}
+                    />
+                    <div className={Style.bigNFTSlider_box_left_creator_profile_info}>
+                      <p>Creator</p>
+                      <h4>
+                        {sliderData1[idNumber]?.name.slice(0, 15) + "..." || 'Loading...'}{" "}
+                        <span>
+                          <MdVerified />
+                        </span>
+                      </h4>
+                    </div>
+                  </div>
+  
+                  <div className={Style.bigNFTSlider_box_left_creator_collection}>
+                    <AiFillFire
+                      className={Style.bigNFTSlider_box_left_creator_collection_icon}
+                    />
+  
+                    <div
+                      className={Style.bigNFTSlider_box_left_creator_collection_info}
+                    >
+                      <p>Collection</p>
+                      <h4>{sliderData[idNumber].collection}</h4>
+                    </div>
+                  </div>
+                </div>
+  
+                <div className={Style.bigNFTSlider_box_left_bidding}>
+                  <div className={Style.bigNFTSlider_box_left_bidding_box}>
+                    <small>Current Bid</small>
+                    {/* <p>
+                      {sliderData1[idNumber]?.price  || 'Loading...'} 
+                    </p> */}
+                    <p>
+                    <FaEthereum />{sliderData1[idNumber]?.price  || 'Loading...'} = {sliderData1[idNumber]?.price ? nftPriceUsd : 'Loading...'} 
+                    </p>
+                  </div>
+  
+                  <p className={Style.bigNFTSlider_box_left_bidding_box_auction}>
+                    <MdTimer
+                      className={Style.bigNFTSlider_box_left_bidding_box_icon}
+                    />
+                    <span>Auction ending in</span>
+                  </p>
+                  {sliderData1[idNumber] && (
+                    <CountdownTimer endTime={new Date(sliderData1[idNumber].time).getTime() + 30 * 24 * 60 * 60 * 1000} />
+                  )}
+                    <Link href={{ pathname: "/NFT-details", query: el }}>
+                    <div className={Style.bigNFTSlider_box_left_button}>
+                      <Button btnName="Place" handleClick={handleClick} />
+                      <Button btnName="View" handleClick={() => { }} />
+                    </div>
+                    </Link>
+                </div>
+  
+                <div className={Style.bigNFTSlider_box_left_sliderBtn}>
+                  <TbArrowBigLeftLines
+                    className={Style.bigNFTSlider_box_left_sliderBtn_icon}
+                    onClick={() => dec()}
+                  />
+                  <TbArrowBigRightLine
+                    className={Style.bigNFTSlider_box_left_sliderBtn_icon}
+                    onClick={() => inc()}
+                  />
+                </div>
+              </div>
+  
+              <div className={Style.bigNFTSlider_box_right}>
+                <div className={Style.bigNFTSlider_box_right_box}>
+                <Image
+                      src={sliderData1[idNumber]?.nftImage}
+                      alt="NFT IMAGE"
+                      width={1000}
+                      height={1000}
+                      className={Style.bigNFTSlider_box_right_box_img}
+                    />
+
+                  <div className={Style.bigNFTSlider_box_right_box_like}>
+                    <AiFillHeart />
+                    <span>{sliderData[idNumber].like}</span>
+                  </div>
+                </div>
               </div>
             </div>
-
-            <div className={Style.bigNFTSlider_box_left_creator_collection}>
-              <AiFillFire
-                className={Style.bigNFTSlider_box_left_creator_collection_icon}
-              />
-
-              <div
-                className={Style.bigNFTSlider_box_left_creator_collection_info}
-              >
-                <p>Collection</p>
-                <h4>{sliderData[idNumber].collection}</h4>
-              </div>
-            </div>
-          </div>
-
-          <div className={Style.bigNFTSlider_box_left_bidding}>
-            <div className={Style.bigNFTSlider_box_left_bidding_box}>
-              <small>Current Bid</small>
-              <p>
-                {sliderData[idNumber].price} <span>$221,21</span>
-              </p>
-            </div>
-
-            <p className={Style.bigNFTSlider_box_left_bidding_box_auction}>
-              <MdTimer
-                className={Style.bigNFTSlider_box_left_bidding_box_icon}
-              />
-              <span>Auction ending in</span>
-            </p>
-
-            <div className={Style.bigNFTSlider_box_left_bidding_box_timer}>
-              <div
-                className={Style.bigNFTSlider_box_left_bidding_box_timer_item}
-              >
-                <p>{sliderData[idNumber].time.days}</p>
-                <span>Days</span>
-              </div>
-
-              <div
-                className={Style.bigNFTSlider_box_left_bidding_box_timer_item}
-              >
-                <p>{sliderData[idNumber].time.hours}</p>
-                <span>Hours</span>
-              </div>
-
-              <div
-                className={Style.bigNFTSlider_box_left_bidding_box_timer_item}
-              >
-                <p>{sliderData[idNumber].time.minutes}</p>
-                <span>mins</span>
-              </div>
-
-              <div
-                className={Style.bigNFTSlider_box_left_bidding_box_timer_item}
-              >
-                <p>{sliderData[idNumber].time.seconds}</p>
-                <span>secs</span>
-              </div>
-            </div>
-
-            <div className={Style.bigNFTSlider_box_left_button}>
-              <Button btnName="Place" handleClick={() => {}} />
-              <Button btnName="View" handleClick={() => {}} />
-            </div>
-          </div>
-
-          <div className={Style.bigNFTSlider_box_left_sliderBtn}>
-            <TbArrowBigLeftLines
-              className={Style.bigNFTSlider_box_left_sliderBtn_icon}
-              onClick={() => dec()}
-            />
-            <TbArrowBigRightLine
-              className={Style.bigNFTSlider_box_left_sliderBtn_icon}
-              onClick={() => inc()}
-            />
-          </div>
-        </div>
-
-        <div className={Style.bigNFTSlider_box_right}>
-          <div className={Style.bigNFTSlider_box_right_box}>
-            <Image
-              src={sliderData[idNumber].nftImage}
-              alt="NFT IMAGE"
-              className={Style.bigNFTSlider_box_right_box_img}
-            />
-
-            <div className={Style.bigNFTSlider_box_right_box_like}>
-              <AiFillHeart />
-              <span>{sliderData[idNumber].like}</span>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
+    
 };
 
 export default BigNFTSilder;

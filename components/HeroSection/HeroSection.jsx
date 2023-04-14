@@ -11,6 +11,7 @@ import images from "../../img";
 import { NFTMarketplaceContext } from "../../Context/NFTMarketplaceContext";
 
 const HeroSection = () => {
+  const router = useRouter();
   const { titleData } = useContext(NFTMarketplaceContext);
   return (
     <div className={Style.heroSection}>
