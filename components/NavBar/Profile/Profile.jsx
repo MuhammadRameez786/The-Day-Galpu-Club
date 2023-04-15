@@ -12,7 +12,7 @@ import {} from "react-router-dom";
 //INTERNAL IMPORT
 import Style from "./Profile.module.css";
 import images from "../../../img";
-import { logout } from "../../../Actions/userActions";
+import { logout } from "../../../userActions/userActions";
 
 const Profile = ({ currentAccount }) => {
   const [user, setUser] = useState('');

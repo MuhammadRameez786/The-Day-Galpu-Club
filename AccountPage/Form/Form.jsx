@@ -202,7 +202,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import Style from "./Form.module.css";
-import { updateProfile } from "../../Actions/userActions";
+import { updateProfile } from "../../userActions/userActions";
 import { useRouter } from "next/router";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
