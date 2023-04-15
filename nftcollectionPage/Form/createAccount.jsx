@@ -105,7 +105,7 @@ const createAccount = () => {
         <div className={Style.Form_box}>
         <div className={Style.account_box_img}>
             <img
-              src={image}
+              src={collectionImage}
               alt="profile Image"
               width={150}
               height={150}
@@ -145,7 +145,7 @@ const createAccount = () => {
                 <textarea
                     id="description"
                     name="description"
-                    value={description}
+                    value={collectionDescription}
                     onChange={(e) => setCollectionDescription(e.target.value)}
                 />
                 </div>
