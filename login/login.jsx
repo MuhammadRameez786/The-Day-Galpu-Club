@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch, useSelector } from "react-redux";
 // import ErrorMessage from "../../components/ErrorMessage";
- import { acountLogin } from "../actions/userActions";
+ import { acountLogin } from "../Actions/userActions";
  import { useRouter } from 'next/router';
 
 
