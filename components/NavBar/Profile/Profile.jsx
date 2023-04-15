@@ -12,7 +12,7 @@ import {} from "react-router-dom";
 //INTERNAL IMPORT
 import Style from "./Profile.module.css";
 import images from "../../../img";
-import { logout } from "../../../actions/userActions";
+//import { logout } from "../../../actions/userActions";
 
 const Profile = ({ currentAccount }) => {
   const [user, setUser] = useState('');
@@ -88,9 +88,9 @@ const Profile = ({ currentAccount }) => {
               <Link href={{ pathname: "/aboutus" }}>About Us</Link>
             </p>
           </div>
-            <div className={Style.profile_menu_one_item}onClick={logoutHandler}>
+            {/* <div className={Style.profile_menu_one_item}onClick={logoutHandler}>
               <TbLogout /> &nbsp;&nbsp;&nbsp;&nbsp;Logout            
-            </div>
+            </div> */}
         </div>
       </div>
     </div>
